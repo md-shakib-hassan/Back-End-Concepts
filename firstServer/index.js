@@ -2,6 +2,11 @@ const express = require("express");
 const app = express();
 const phones = require("./phones.json")
 const port = 3000;
+const cors = require('cors');
+
+
+app.use(cors());
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Hello World! ');
@@ -16,9 +21,12 @@ app.get("/phones",(req, res)=>{
   // console.log()
 })
 
-app.get("phones/:id",(req,res)=>{
+app.get("/phones/:id",(req,res)=>{
 
-  const id = req.params.id;  
+  const id = parseInt(req.params.id); 
+  const result = phones.find(phone => id === phone.id) 
+  res.send(result)
+  // console.log(result)
 
 })
 

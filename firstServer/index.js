@@ -5,6 +5,7 @@ const port = 3000;
 const cors = require('cors');
 
 
+
 app.use(cors());
 app.use(express.json());
 
@@ -14,6 +15,11 @@ app.get('/', (req, res) => {
 
 app.get('/data', (req, res) => {
   res.send('Hello World form data!');
+});
+
+app.post('/phones',(req,res)=>{
+  console.log("hit post method");
+  console.log(req.body);
 });
 
 app.get("/phones",(req, res)=>{

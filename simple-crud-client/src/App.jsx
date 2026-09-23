@@ -1,6 +1,6 @@
 
 import './App.css'
-import Form from './components/From'
+import Form from './components/Form'
 
 
 function App() {

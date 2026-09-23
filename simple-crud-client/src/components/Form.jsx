@@ -2,13 +2,26 @@ import React from 'react'
 
 const Form = () => {
 
-    const handleSubmit = (event)=>{
+    const handleSubmit = (event) => {
         event.preventDefault();
-        
+        const name = event.target.name.value;
+        const email = event.target.email.value;
+
+        const user = { name, email };
+
+        fetch('http://localhost:3000/users', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(user)
+        })
+            .then(response => response.json())
+            .then(result => console.log(result))
     }
 
-  return (
-    <div>
+    return (
+        <div>
             <div className="hero bg-base-200 min-h-screen">
                 <div className="hero-content flex-col lg:flex-row-reverse">
 
@@ -30,7 +43,7 @@ const Form = () => {
                 </div>
             </div>
         </div>
-  )
+    )
 }
 
 export default Form

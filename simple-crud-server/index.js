@@ -1,48 +1,80 @@
-const express = require('express');
-const app = express()
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const cors = require('cors');
-const port =  3000
+require("dotenv").config();
 
+const express = require("express");
+const app = express();
+
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const cors = require("cors");
+
+const port = 3000;
+
+// Middleware
 app.use(cors());
 app.use(express.json());
-// mongobd password F7LdMC1NlfoliMdE
 
-// user password dafafzLMUqlGHqdJ
+// MongoDB URI
+const uri = process.env.MONGODB_URI;
 
-
-
-const uri = "mongodb+srv://arefinshakibkhan_db_user:F7LdMC1NlfoliMdE@deveng.4lz9g40.mongodb.net/?appName=DevEng";
-
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// MongoDB Client
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
+  },
+});
+
+// Database and Collection
+const database = client.db("samplefirstbd");
+const usersCollection = database.collection("users");
+
+// Root Route
+app.get("/", (req, res) => {
+  res.send("Simple CRUD Server");
+});
+
+// POST Route - Add User
+app.post("/users", async (req, res) => {
+  try {
+    const user = req.body;
+
+    console.log("User received:", user);
+
+    const result = await usersCollection.insertOne(user);
+
+    res.status(201).json({
+      success: true,
+      message: "User added successfully",
+      insertedId: result.insertedId,
+    });
+  } catch (error) {
+    console.error("Insert error:", error);
+
+    res.status(500).json({
+      success: false,
+      message: "Failed to add user",
+    });
   }
 });
 
+// Start Server After MongoDB Connection
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
-    // Send a ping to confirm a successful connection
+
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
-  } finally {
-    // Ensures that the client will close when you finish/error
-    await client.close();
+
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
+
+    app.listen(port, () => {
+      console.log(`Example app listening on port ${port}`);
+    });
+  } catch (error) {
+    console.error("MongoDB connection failed:", error);
   }
 }
-run().catch(console.dir);
 
-
-app.get('/', (req, res) => {
-  res.send('simple CURD Server')
-})
-
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+run();

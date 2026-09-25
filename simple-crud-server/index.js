@@ -58,6 +58,14 @@ app.post("/users", async (req, res) => {
   }
 });
 
+// trying get data from DB
+app.get("/users",async (req,res)=>{
+   const cursor = usersCollection.find();
+   const result = await cursor.toArray();
+
+   res.send(result);
+})
+
 // Start Server After MongoDB Connection
 async function run() {
   try {
